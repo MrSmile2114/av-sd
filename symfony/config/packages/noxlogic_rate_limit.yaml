@@ -1,0 +1,7 @@
+noxlogic_rate_limit:
+  storage_engine: redis
+  enabled: true
+  # this is pre-configured to be `default_client` (referring to snc_redis.default_client)
+  # use the 'modern' service name.
+  redis_client: default
+  fos_oauth_key_listener: false # #
