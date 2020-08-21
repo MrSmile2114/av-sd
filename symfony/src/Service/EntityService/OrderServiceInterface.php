@@ -4,8 +4,6 @@
 namespace App\Service\EntityService;
 
 
-use App\Entity\Order;
-
 interface OrderServiceInterface
 {
     /**
@@ -50,7 +48,7 @@ interface OrderServiceInterface
      *
      * @param array $data   Order data
      *
-     * @return array
+     * @return array        Normalized entity
      */
     public function createOrder(array $data): array;
 }

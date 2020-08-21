@@ -17,12 +17,24 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 final class OrderEntityService extends AbstractEntityService implements OrderServiceInterface
 {
-    private $defaultOrder = '-id';
+    /**
+     * @var string default sort
+     */
+    private $defaultOrder = 'desc_id';
 
+    /**
+     * @var string[] array containing the fields always added to the response
+     */
     private $defaultRespFields = ['id', 'composition', 'address', 'price', 'status'];
 
+    /**
+     * @var string[] array containing fields that can be added to the response at the user's request
+     */
     private $allowedOptRespFields = ['additional', 'latitude', 'longitude'];
 
+    /**
+     * @var string[] array containing fields by which sorting is possible
+     */
     private $orderlyFields = ['id', 'price', 'address', 'status'];
 
     /**

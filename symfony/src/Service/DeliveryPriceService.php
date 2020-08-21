@@ -3,7 +3,12 @@
 
 namespace App\Service;
 
-
+/**
+ * Class DeliveryPriceService
+ * Simple example of implementing a service for calculating the price of delivery
+ *
+ * @package App\Service
+ */
 final class DeliveryPriceService implements DeliveryPriceServiceInterface
 {
 
