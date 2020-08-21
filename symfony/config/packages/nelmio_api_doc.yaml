@@ -1,9 +1,139 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Simple delivery service API
+            description: Simple API example for a delivery service
             version: 1.0.0
+        definitions:
+            GetPriceSucc:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 200
+                    price:
+                        type: integer
+                        nullable: true
+                        example: 100
+            GetPriceNull:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 200
+                    price:
+                        type: integer
+                        nullable: true
+                        example: 'null'
+            ValidationError:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 400
+                    message:
+                        type: string
+                        example: "Parameter \"longitude\" of value \"180.993401\" violated a constraint \"Invalid longitude value (180.993401)\""
+            GetOrder:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 200
+                    order:
+                        $ref: "#/definitions/Order"
+            GetOrderNotFound:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 400
+                    message:
+                        type: string
+                        example: "Order with this ID not found"
+            Order:
+                type: object
+                properties:
+                    id:
+                        $ref: "#/definitions/Id"
+                    composition:
+                        $ref: "#/definitions/Composition"
+                    address:
+                        $ref: "#/definitions/Address"
+                    latitude:
+                        $ref: "#/definitions/Latitude"
+                    longitude:
+                        $ref: "#/definitions/Longitude"
+                    price:
+                        $ref: "#/definitions/Price"
+                    status:
+                        $ref: "#/definitions/Status"
+                    additional:
+                        $ref: "#/definitions/Additional"
+                required:
+                    - id
+                    - latitude
+                    - longitude
+                    - composition
+                    - address
+                    - price
+                    - status
+            GetOrderList:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 200
+                    page:
+                        type: integer
+                        example: 1
+                    nextPageExists:
+                        type: boolean
+                        example: true
+                    orders:
+                        type: array
+                        items:
+                            $ref: "#/definitions/Order"
+#        Parameters
+            Latitude:
+                description: "delivery point latitude"
+                type: number
+                minimum: -90
+                maximum: 90
+                example: 55.77799792
+            Longitude:
+                description: "delivery point longitude"
+                type: number
+                minimum: -180
+                maximum: 180
+                example: 37.715401
+            Composition:
+                description: "order composition"
+                type: string
+                example: "1 product1, 1 product2"
+            Address:
+                type: string
+                example: "221b, Baker Street, London"
+                description: "delivery address"
+            Price:
+                type: integer
+                example: 200
+            Status:
+                type: string
+                example: "delivered"
+            Additional:
+                type: string
+                example: "some info"
+            Id:
+                type: integer
+                minimum: 1
+                example: 10
+            Fields:
+                type: string
+                example: "additional, latitude, longitude"
+
+
+
     areas: # to filter documented areas
         path_patterns:
             - ^/api/(?!doc) # Accepts routes under /api except /api/doc
