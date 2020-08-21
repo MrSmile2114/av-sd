@@ -24,6 +24,6 @@ script:
   - docker exec php-fpm  php bin/phpunit --coverage-clover=coverage.xml
 
 after_script:
-  #  - docker cp php-fpm:/var/www/symfony/coverage.xml shared
-  #  - bash <(curl -s https://codecov.io/bash)
+    - docker cp php-fpm:/var/www/symfony/coverage.xml shared
+    - bash <(curl -s https://codecov.io/bash)
   - docker-compose stop
