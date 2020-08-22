@@ -297,4 +297,51 @@ final class ApiController extends AbstractFOSRestController
             ]
         );
     }
+
+    /**
+     * Update order status as delivered
+     *
+     * @Rest\Patch("/api/order/{id}/delivered", name="order_delivered", requirements={"id"="\d+"})
+     *
+     *
+     * @SWG\Parameter(
+     *     name="id", in="path",
+     *     description="order id",
+     *     required=true,
+     *     type="integer",
+     *     @SWG\Schema(ref="#/definitions/Id"))
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Status updated successfully",
+     *     @SWG\Schema(ref="#/definitions/GetOrder"))
+     * @SWG\Response(
+     *     response=204,
+     *     description="Order status is already delivered"
+     *     )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Order not found",
+     *     @SWG\Schema(ref="#/definitions/GetOrderNotFound"))
+     *
+     * @param int $id
+     * @param OrderServiceInterface $orderService
+     *
+     * @return View
+     */
+    public function orderDelivered(int $id, OrderServiceInterface $orderService)
+    {
+        $orderData = $orderService->getOrderData($id, '');
+        if (is_null($orderData)) {
+            return $this->view(['code' => 404, 'message' => 'Order with this ID not found'], 404);
+        }
+
+        if ($orderData['status'] === 'delivered') {
+            return $this->view([], 204);
+        }
+
+        $orderData = $orderService->updateOrder($id, ['status' => 'delivered']);
+
+        return $this->view(['code' => 200, 'order' => $orderData]);
+    }
 }

@@ -47,10 +47,18 @@ nelmio_api_doc:
                 properties:
                     code:
                         type: integer
-                        example: 400
+                        example: 404
                     message:
                         type: string
                         example: "Order with this ID not found"
+            GetOrderNoContent:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        example: 204
+                    order:
+                        $ref: "#/definitions/Order"
             Order:
                 type: object
                 properties:

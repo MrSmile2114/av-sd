@@ -147,13 +147,13 @@ class ApiControllerTest extends WebTestCase
 
         $this->client->request(
             'GET',
-            '/api/orders?page=2&resOnPage=3&fields=additional&orderBy=asc_additional'
+            '/api/orders?page=2&resOnPage=3&fields=additional&orderBy=asc_address'
         );
         $resp = $this->client->getResponse();
         $ordersData = json_decode($resp->getContent(), true)['orders'];
         $this->assertCount(3, $ordersData);
 
-        $i = 3;
+        $i = '11';
         foreach ($ordersData as $orderData) {
             $this->assertEquals($orders[$i]->getAdditional(), $orderData['additional']);
             $this->assertEquals($orders[$i]->getAddress(), $orderData['address']);
@@ -180,14 +180,65 @@ class ApiControllerTest extends WebTestCase
         );
         $resp = $this->client->getResponse();
         $this->assertResponseStatusCodeSame($expectedCode);
-        if($expectedCode === 200){
+        if ($expectedCode === 200) {
             $respData = json_decode($resp->getContent(), true);
             $this->assertEquals(1, $respData['page']);
         }
-
-
     }
 
+    public function testOrderDeliveredSuc()
+    {
+        $order = new Order();
+        $order->setAdditional("Test additional");
+        $order->setAddress("Test address");
+        $order->setComposition("Test composition");
+        $order->setLatitude("55.768922");
+        $order->setLongitude("37.736982");
+        $order->setPrice(mt_rand(10, 1000));
+        $order->setStatus("processing");
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+        $id = $order->getId();
+
+        $this->client->request('PATCH', '/api/order/'.$id.'/delivered');
+        $resp = $this->client->getResponse();
+        $this->assertResponseStatusCodeSame(200);
+
+        $respData = json_decode($resp->getContent(), true);
+        $this->assertEquals('delivered', $respData['order']['status']);
+
+        $this->entityManager->remove($order);
+        $this->entityManager->flush();
+    }
+
+    public function testOrderDeliveredNotFound()
+    {
+        $this->client->request('PATCH', '/api/order/0/delivered');
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testOrderDeliveredNoContent()
+    {
+        $order = new Order();
+        $order->setAdditional("Test additional");
+        $order->setAddress("Test address");
+        $order->setComposition("Test composition");
+        $order->setLatitude("55.768922");
+        $order->setLongitude("37.736982");
+        $order->setPrice(mt_rand(10, 1000));
+        $order->setStatus("delivered");
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+        $id = $order->getId();
+
+        $this->client->request('PATCH', '/api/order/'.$id.'/delivered');
+        $this->assertResponseStatusCodeSame(204);
+
+        $this->entityManager->remove($order);
+        $this->entityManager->flush();
+    }
 
     /**
      * Data Providers

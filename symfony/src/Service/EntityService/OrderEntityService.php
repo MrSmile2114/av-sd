@@ -124,4 +124,21 @@ final class OrderEntityService extends AbstractEntityService implements OrderSer
 
         return $this->normalizeEntity($order, '', [], $this->defaultRespFields);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateOrder(int $orderId, array $data): ?array
+    {
+        /** @var Order $order */
+        $order = $this->updateEntity($orderId, $data);
+        if (is_null($order)) {
+            return null;
+        }
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+
+        return $this->normalizeEntity($order, '', [], $this->defaultRespFields);
+    }
 }

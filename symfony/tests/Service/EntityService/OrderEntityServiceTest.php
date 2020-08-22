@@ -47,11 +47,10 @@ class OrderEntityServiceTest extends WebTestCase
         /** @var Order[] $orders */
         $orders = $fixture->load($this->entityManager);
 
-        $ordersData = $this->orderService->getOrdersPageData(2, 3, "additional", "asc_additional");
-
+        $ordersData = $this->orderService->getOrdersPageData(2, 3, "additional", "asc_address");
         $this->assertCount(3, $ordersData);
 
-        $i = 3;
+        $i = '11';
         foreach ($ordersData as $orderData) {
             $this->assertEquals($orders[$i]->getAdditional(), $orderData['additional']);
             $this->assertEquals($orders[$i]->getAddress(), $orderData['address']);
@@ -121,7 +120,7 @@ class OrderEntityServiceTest extends WebTestCase
         $this->entityManager->remove($order);
         $this->entityManager->flush();
 
-        $data = $this->orderService->getOrderData($id,'');
+        $data = $this->orderService->getOrderData($id, '');
         $this->assertNull($data);
     }
 
@@ -146,6 +145,9 @@ class OrderEntityServiceTest extends WebTestCase
         $this->assertEquals($data['composition'], $orderData['composition']);
         $this->assertEquals($data['address'], $orderData['address']);
         $this->assertNotNull($orderData['price']);
+
+        $this->entityManager->remove($this->entityManager->getRepository(Order::class)->find($orderData['id']));
+        $this->entityManager->flush();
     }
 
     /**
@@ -160,6 +162,56 @@ class OrderEntityServiceTest extends WebTestCase
             $this->orderService->getOrderCriteria($initData, $orderlyFields, ['created' => 'desc']),
             $procData
         );
+    }
+
+    public function testUpdateOrder()
+    {
+        $order = new Order();
+        $order->setAdditional("Test additional");
+        $order->setAddress("Test address");
+        $order->setComposition("Test composition");
+        $order->setLatitude("55.768922");
+        $order->setLongitude("37.736982");
+        $order->setPrice(mt_rand(10, 1000));
+        $order->setStatus("processing");
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+        $id = $order->getId();
+
+        $newData = [
+            'id'            => 123,
+            'additional'    => 'new Additional',
+            'address'       => 'Test addressTest address',
+            'composition'   => 'Test compositionTest composition',
+            'latitude'      => 55.968922,
+            'longitude'     => 37.738982,
+            'price'         => 1234,
+            'status'        => 'delivered',
+            'nonexistent'   => 'nonexistent field',
+        ];
+
+        $this->orderService->updateOrder($id, $newData);
+
+        $orderData = $this->orderService->getOrderData($id, 'additional, latitude, longitude, nonexistent');
+
+        foreach ($orderData as $field => $value) {
+            if ($field !== 'id') {
+                $this->assertEquals($newData[$field], $orderData[$field]);
+            } else {                                                        //check has the id changed
+                $this->assertNotEquals($newData[$field], $orderData[$field]);
+            }
+        }
+        $this->assertArrayNotHasKey('nonexistent', $orderData);
+
+        $this->entityManager->remove($order);
+        $this->entityManager->flush();
+    }
+
+    public function testUpdateOrderNotFound()
+    {
+        $orderData = $this->orderService->updateOrder(0, ['status' => 'delivered']);
+        $this->assertNull($orderData);
     }
 
     /**

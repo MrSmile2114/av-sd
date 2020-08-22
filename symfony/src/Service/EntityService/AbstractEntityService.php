@@ -192,4 +192,31 @@ abstract class AbstractEntityService
 
         return $this->objectRepository->count($criteria);
     }
+
+    /**
+     * Updating entity data
+     *
+     * @param int $entityId Entity ID
+     * @param array $data   Entity Data
+     *
+     * @return object|null  Returns Entity object, null if entity not found
+     */
+    protected function updateEntity(int $entityId, array $data)
+    {
+        $entity = $this->objectRepository->find($entityId);
+        if (is_null($entity)){
+            return null;
+        }
+
+        foreach ($data as $field => $value) {
+            if (property_exists($entity, $field)) {
+                $funcName = 'set'.ucfirst($field);
+                if (method_exists($entity, $funcName)) {
+                    $entity->$funcName($value);
+                }
+            }
+        }
+
+        return $entity;
+    }
 }

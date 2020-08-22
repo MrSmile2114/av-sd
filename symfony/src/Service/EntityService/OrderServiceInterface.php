@@ -51,4 +51,14 @@ interface OrderServiceInterface
      * @return array        Normalized entity
      */
     public function createOrder(array $data): array;
+
+    /**
+     * Updates order data
+     *
+     * @param int $orderId  Order id in the system
+     * @param array $data   Order data
+     *
+     * @return array|null   Returns a normalized entity, null if an entity with such orderId is not found
+     */
+    public function updateOrder(int $orderId, array $data): ?array;
 }
