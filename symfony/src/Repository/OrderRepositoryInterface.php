@@ -4,7 +4,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\Persistence\ObjectRepository;
 
 /**
  * @method Order|null find($id, $lockMode = null, $lockVersion = null)
