@@ -1,8 +1,8 @@
 # Прототип API сервиса курьерской доставки
 Разработан прототип JSON API для сервиса курьерской доставки
 
-[![Build Status](https://travis-ci.org/MrSmile2114/av-sd.svg?branch=master)](https://travis-ci.org/MrSmile2114/av-sd)
-[![codecov](https://codecov.io/gh/MrSmile2114/av-sd/branch/master/graph/badge.svg)](https://codecov.io/gh/MrSmile2114/av-sd)
+[![Build Status](https://travis-ci.org/s-shiryaev/av-sd.svg?branch=master)](https://travis-ci.org/s-shiryaev/av-sd)
+[![codecov](https://codecov.io/gh/s-shiryaev/av-sd/branch/master/graph/badge.svg)](https://codecov.io/gh/s-shiryaev/av-sd)
 
 #### Основной функционал
 Предполагается, что на стороне frontend адрес клиента преобразуется в координаты места доставки. 
